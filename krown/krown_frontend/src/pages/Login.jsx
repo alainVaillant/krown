@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
 import { Lock, User, AlertCircle } from 'lucide-react';
@@ -91,8 +91,8 @@ export default function Login() {
           </button>
         </form>
 
-        <p className="text-center mt-8 text-gray-500">
-          Pas encore de compte ? <button className="text-krown-gold font-bold hover:underline">Contactez KROWN</button>
+        <p className="text-center mt-8 text-gray-500 font-medium">
+          Pas encore de compte ? <Link to="/register" className="text-krown-gold font-black hover:underline ml-1">S'inscrire</Link>
         </p>
       </motion.div>
     </div>

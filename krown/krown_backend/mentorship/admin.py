@@ -1,3 +1,10 @@
 from django.contrib import admin
+from .models import MentorshipProgram, MentorshipApplication
 
-# Register your models here.
+@admin.register(MentorshipProgram)
+class MentorshipProgramAdmin(admin.ModelAdmin):
+    list_display = ('title', 'duration', 'price')
+
+@admin.register(MentorshipApplication)
+class MentorshipApplicationAdmin(admin.ModelAdmin):
+    list_display = ('user', 'program', 'status', 'created_at')

@@ -3,6 +3,7 @@ import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Login from './pages/Login';
+import Register from './pages/Register';
 import Services from './pages/Services';
 import Academy from './pages/Academy';
 import RealEstate from './pages/RealEstate';
@@ -20,6 +21,7 @@ function App() {
             {/* Routes publiques */}
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             <Route path="/services" element={<Services />} />
             <Route path="/academy" element={<Academy />} />
             <Route path="/real-estate" element={<RealEstate />} />
