@@ -15,13 +15,13 @@ export default function Dashboard() {
   const { user } = useAuth();
 
   if (!user) return (
-    <div className="min-h-screen flex items-center justify-center bg-krown-cream">
+    <div className="min-h-screen flex items-center justify-center bg-krown-cream dark:bg-[#0A0505]">
        <div className="w-12 h-12 border-4 border-krown-gold border-t-transparent rounded-full animate-spin"></div>
     </div>
   );
 
   return (
-    <div className="flex min-h-screen bg-[#F8F7F5]">
+    <div className="flex min-h-screen bg-[#F8F7F5] dark:bg-[#0A0505] transition-colors duration-500">
       <Sidebar />
       
       <main className="flex-grow p-8 lg:p-16">
@@ -31,12 +31,12 @@ export default function Dashboard() {
                <Crown className="h-5 w-5 text-krown-gold" />
                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-krown-gold">Espace Membre Privilège</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-black text-krown-bordeaux tracking-tight">
+            <h1 className="text-4xl md:text-5xl font-black text-krown-bordeaux dark:text-white tracking-tight transition-colors">
               Bienvenue, {user.username}.
             </h1>
           </div>
           
-          <button className="flex items-center gap-3 bg-krown-bordeaux text-white px-8 py-4 rounded-2xl font-bold shadow-xl shadow-red-900/10 hover:scale-105 transition-all">
+          <button className="flex items-center gap-3 bg-krown-bordeaux dark:bg-krown-gold text-white px-8 py-4 rounded-2xl font-bold shadow-xl shadow-red-900/10 hover:scale-105 transition-all">
             <Plus className="h-5 w-5" /> Nouveau Projet
           </button>
         </header>
@@ -50,9 +50,9 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Activités Récentes */}
-          <section className="lg:col-span-2 bg-white p-12 rounded-[40px] shadow-sm border border-gray-100">
+          <section className="lg:col-span-2 bg-white dark:bg-[#120808] p-12 rounded-[40px] shadow-sm border border-gray-100 dark:border-white/5 transition-colors">
             <div className="flex justify-between items-center mb-10">
-               <h2 className="text-2xl font-bold text-krown-bordeaux flex items-center gap-3">
+               <h2 className="text-2xl font-bold text-krown-bordeaux dark:text-white flex items-center gap-3 transition-colors">
                  <Clock className="h-6 w-6 text-krown-gold" /> Activité Récente
                </h2>
                <button className="text-sm font-bold text-krown-gold hover:underline">Voir tout</button>
@@ -82,25 +82,25 @@ export default function Dashboard() {
 
           {/* Support / Quick Links */}
           <section className="space-y-8">
-             <div className="bg-krown-bordeaux p-10 rounded-[40px] text-white relative overflow-hidden group">
+             <div className="bg-krown-bordeaux dark:bg-[#1A0A0A] p-10 rounded-[40px] text-white relative overflow-hidden group transition-colors">
                 <div className="relative z-10">
                   <h3 className="text-2xl font-bold mb-4 italic">Un conseiller vous attend.</h3>
                   <p className="text-red-100/70 text-sm mb-8 leading-relaxed">
                     Besoin d'un accompagnement sur mesure ? Nos experts sont là pour vous.
                   </p>
-                  <button className="w-full bg-white text-krown-bordeaux py-4 rounded-2xl font-black text-xs uppercase tracking-widest group-hover:bg-krown-gold group-hover:text-white transition-all">
+                  <button className="w-full bg-white dark:bg-krown-gold text-krown-bordeaux dark:text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest group-hover:bg-krown-gold dark:group-hover:bg-white group-hover:text-white dark:group-hover:text-krown-bordeaux transition-all">
                     Prendre RDV
                   </button>
                 </div>
                 <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
              </div>
 
-             <div className="bg-white p-10 rounded-[40px] border border-gray-100">
-                <h3 className="font-bold text-krown-bordeaux mb-6 uppercase text-xs tracking-widest">Ressources Utiles</h3>
+             <div className="bg-white dark:bg-[#120808] p-10 rounded-[40px] border border-gray-100 dark:border-white/5 transition-colors">
+                <h3 className="font-bold text-krown-bordeaux dark:text-krown-gold mb-6 uppercase text-xs tracking-widest transition-colors">Ressources Utiles</h3>
                 <ul className="space-y-4">
                    {['Guide de bienvenue', 'Catalogue 2026', 'Support Technique'].map((link) => (
                      <li key={link} className="flex justify-between items-center group cursor-pointer">
-                        <span className="text-krown-sage font-medium group-hover:text-krown-bordeaux transition-colors">{link}</span>
+                        <span className="text-krown-sage dark:text-gray-400 font-medium group-hover:text-krown-bordeaux dark:group-hover:text-krown-gold transition-colors">{link}</span>
                         <ChevronRight className="h-4 w-4 text-krown-gold group-hover:translate-x-2 transition-transform" />
                      </li>
                    ))}
@@ -115,15 +115,15 @@ export default function Dashboard() {
 
 function StatCard({ title, value, sub, color }) {
   const styles = {
-    bordeaux: "text-krown-bordeaux bg-white",
-    gold: "text-krown-gold bg-white",
-    sage: "text-krown-sage bg-white"
+    bordeaux: "text-krown-bordeaux dark:text-white bg-white dark:bg-[#120808]",
+    gold: "text-krown-gold bg-white dark:bg-[#120808]",
+    sage: "text-krown-sage dark:text-gray-300 bg-white dark:bg-[#120808]"
   };
 
   return (
     <motion.div 
       whileHover={{ y: -10 }}
-      className={`p-10 rounded-[40px] shadow-sm border border-gray-100 flex flex-col justify-between h-56 transition-all duration-500 ${styles[color]}`}
+      className={`p-10 rounded-[40px] shadow-sm border border-gray-100 dark:border-white/5 flex flex-col justify-between h-56 transition-all duration-500 ${styles[color]}`}
     >
       <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-50">{title}</p>
       <div>
@@ -139,12 +139,12 @@ function StatCard({ title, value, sub, color }) {
 function ActivityItem({ title, desc, time, icon }) {
   return (
     <div className="flex gap-6 group">
-      <div className="mt-1 p-3 bg-gray-50 rounded-2xl group-hover:bg-krown-cream transition-colors">
+      <div className="mt-1 p-3 bg-gray-50 dark:bg-white/5 rounded-2xl group-hover:bg-krown-cream dark:group-hover:bg-white/10 transition-colors">
         {icon}
       </div>
       <div>
-        <h4 className="font-bold text-krown-bordeaux text-lg leading-tight mb-1">{title}</h4>
-        <p className="text-krown-sage text-sm mb-2 max-w-md">{desc}</p>
+        <h4 className="font-bold text-krown-bordeaux dark:text-white text-lg leading-tight mb-1 transition-colors">{title}</h4>
+        <p className="text-krown-sage dark:text-gray-400 text-sm mb-2 max-w-md transition-colors">{desc}</p>
         <span className="text-[10px] font-black uppercase tracking-widest text-krown-gold opacity-60">{time}</span>
       </div>
     </div>

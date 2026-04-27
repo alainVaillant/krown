@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../services/api';
-import { Users, Target, Rocket, Award, CheckCircle, Loader2, ArrowRight, X, Send } from 'lucide-react';
+import { Users, Target, Rocket, Award, CheckCircle, Loader2, ArrowRight, X, Send, Zap } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 
@@ -10,154 +10,159 @@ export default function Mentorship() {
   const [loading, setLoading] = useState(true);
   const [selectedProgram, setSelectedProgram] = useState(null);
   const { user } = useAuth();
+  const { showNotification } = useNotification();
 
   const fetchPrograms = useCallback(async () => {
     try {
       const response = await api.get('mentorship/');
       setPrograms(response.data);
     } catch (error) {
-      console.error("Erreur lors du chargement des programmes:", error);
+      showNotification("Erreur lors du chargement des programmes", "error");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [showNotification]);
 
   useEffect(() => {
     fetchPrograms();
   }, [fetchPrograms]);
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.2 } }
+  };
+
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+  };
+
   return (
-    <div className="bg-krown-cream pt-40 pb-32 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="bg-krown-cream dark:bg-[#0A0505] pt-40 pb-32 min-h-screen transition-colors duration-700 relative overflow-hidden">
+      
+      {/* Background Decor */}
+      <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-krown-bordeaux/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Hero Mentorat */}
-        <div className="text-center mb-24">
+        <div className="max-w-5xl mb-32">
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-krown-bordeaux/5 text-krown-bordeaux text-xs font-black uppercase tracking-widest mb-8"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-3 text-krown-gold font-bold uppercase tracking-[0.4em] text-[10px] mb-8"
           >
-            <Users className="h-4 w-4" /> Accompagnement Stratégique
+            <Zap className="h-3 w-3 fill-current" />
+            Strategic Leadership
           </motion.div>
           <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-8xl font-black text-krown-bordeaux tracking-tighter mb-8 leading-none"
+            className="text-6xl md:text-9xl font-black text-krown-bordeaux dark:text-white tracking-tighter mb-10 leading-[0.85] transition-colors"
           >
-            Devenez le <span className="text-krown-gold">Leader</span> <br /> que vous devez être.
+            Become the <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-krown-gold to-krown-gold-light">Architect of Future.</span>
           </motion.h1>
-          <p className="text-xl text-krown-sage font-medium max-w-3xl mx-auto leading-relaxed">
-            Le programme de mentorat KROWN n'est pas une simple formation. C'est une immersion stratégique conçue pour propulser votre vision au niveau supérieur.
-          </p>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="text-xl md:text-2xl text-krown-sage dark:text-gray-400 font-medium max-w-2xl leading-relaxed transition-colors"
+          >
+            Le mentorat KROWN est une immersion stratégique pour les dirigeants qui refusent le statu quo.
+          </motion.p>
         </div>
 
-        {/* Valeurs Mentorat */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-32">
-          <ValueCard 
-            icon={<Target className="text-krown-gold" />} 
-            title="Vision Claire" 
-            desc="Définissez des objectifs ambitieux et tracez la route pour les atteindre." 
-          />
-          <ValueCard 
-            icon={<Rocket className="text-krown-gold" />} 
-            title="Exécution Rapide" 
-            desc="Passez de l'idée à l'action avec des méthodes de travail éprouvées." 
-          />
-          <ValueCard 
-            icon={<Award className="text-krown-gold" />} 
-            title="Leadership" 
-            desc="Maîtrisez l'art d'influencer et de fédérer vos équipes autour de votre projet." 
-          />
-        </div>
+        {/* Valeurs Mentorat en Bento Style */}
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-40"
+        >
+          <ValueCard variants={fadeInUp} icon={<Target />} title="Visionary Goals" desc="Définissez des objectifs qui transcendent le marché actuel." />
+          <ValueCard variants={fadeInUp} icon={<Rocket />} title="Rapid Execution" desc="Transformez vos idées en actifs concrets avec précision." />
+          <ValueCard variants={fadeInUp} icon={<Award />} title="Elite Network" desc="Accédez à un écosystème de leaders et de partenaires mondiaux." />
+        </motion.div>
 
-        {/* Liste des Programmes */}
-        <h2 className="text-3xl font-black text-krown-bordeaux mb-12 text-center uppercase tracking-widest">Nos Programmes</h2>
-        
-        {loading ? (
-          <div className="flex justify-center py-20">
-            <Loader2 className="h-10 w-10 text-krown-gold animate-spin" />
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            {programs.map((program) => (
-              <motion.div
-                key={program.id}
-                whileHover={{ scale: 1.02 }}
-                className="bg-white rounded-[40px] p-10 shadow-sm border border-gray-100 flex flex-col md:flex-row gap-10 group transition-all hover:shadow-2xl"
-              >
-                <div className="md:w-1/2">
-                   <div className="text-[10px] font-black text-krown-gold uppercase tracking-[0.3em] mb-4">Durée : {program.duration}</div>
-                   <h3 className="text-3xl font-black text-krown-bordeaux mb-6 group-hover:text-krown-gold transition-colors">{program.title}</h3>
-                   <p className="text-krown-sage font-medium mb-8 leading-relaxed">
-                     {program.description}
-                   </p>
-                   <div className="text-2xl font-black text-krown-bordeaux mb-8">{program.price} € <span className="text-sm font-medium text-gray-400">/ programme</span></div>
-                   <button 
-                    onClick={() => setSelectedProgram(program)}
-                    className="flex items-center gap-3 bg-krown-bordeaux text-white px-8 py-4 rounded-2xl font-bold hover:bg-krown-gold transition-all"
-                   >
-                     Postuler au programme <ArrowRight className="h-4 w-4" />
-                   </button>
+        {/* Liste des Programmes avec design asymétrique */}
+        <div className="space-y-32">
+          {programs.map((program, index) => (
+            <motion.div
+              key={program.id}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={fadeInUp}
+              className={`flex flex-col ${index % 2 === 1 ? 'lg:flex-row-reverse' : 'lg:flex-row'} items-center gap-20`}
+            >
+              <div className="lg:w-1/2">
+                <div className="text-[10px] font-black text-krown-gold uppercase tracking-[0.3em] mb-6">Program Duration: {program.duration}</div>
+                <h3 className="text-5xl md:text-6xl font-black text-krown-bordeaux dark:text-white mb-8 tracking-tighter transition-colors leading-none">{program.title}</h3>
+                <p className="text-xl text-krown-sage dark:text-gray-400 font-medium mb-12 leading-relaxed transition-colors">
+                  {program.description}
+                </p>
+                <div className="flex items-center gap-10">
+                    <div className="text-3xl font-black text-krown-bordeaux dark:text-krown-gold transition-colors">{program.price} €</div>
+                    <button 
+                        onClick={() => setSelectedProgram(program)}
+                        className="bg-krown-bordeaux dark:bg-white text-white dark:text-black px-10 py-5 rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-2xl"
+                    >
+                        Apply Now
+                    </button>
                 </div>
-                <div className="md:w-1/2 h-64 md:h-auto rounded-[30px] overflow-hidden bg-gray-50 relative">
-                   {program.image ? (
-                     <img src={program.image} alt={program.title} className="w-full h-full object-cover" />
-                   ) : (
-                     <div className="w-full h-full flex items-center justify-center text-krown-gold opacity-10">
-                        <Users className="w-32 h-32" />
-                     </div>
-                   )}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        )}
+              </div>
+              <div className="lg:w-1/2 w-full h-[500px] rounded-[60px] overflow-hidden relative group">
+                {program.image ? (
+                  <img src={program.image} alt={program.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
+                ) : (
+                  <div className="w-full h-full bg-krown-bordeaux/5 dark:bg-white/5 flex items-center justify-center text-krown-gold opacity-10">
+                    <Users className="w-40 h-40" />
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-krown-bordeaux/20 dark:bg-black/40 mix-blend-overlay"></div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
 
-      {/* Modale de Candidature */}
       <AnimatePresence>
         {selectedProgram && (
-          <MentorshipModal 
-            program={selectedProgram} 
-            onClose={() => setSelectedProgram(null)} 
-          />
+          <MentorshipModal program={selectedProgram} onClose={() => setSelectedProgram(null)} />
         )}
       </AnimatePresence>
     </div>
   );
 }
 
-function ValueCard({ icon, title, desc }) {
+function ValueCard({ icon, title, desc, variants }) {
   return (
-    <div className="text-center p-8">
-      <div className="w-16 h-16 bg-white rounded-2xl shadow-lg flex items-center justify-center mx-auto mb-6 text-2xl">
+    <motion.div variants={variants} className="p-12 bg-white dark:bg-[#120808] rounded-[50px] border border-gray-50 dark:border-white/5 shadow-sm hover:shadow-2xl transition-all duration-500 text-center">
+      <div className="w-16 h-16 bg-krown-gold/10 rounded-2xl flex items-center justify-center mx-auto mb-8 text-krown-gold">
         {icon}
       </div>
-      <h3 className="text-xl font-bold text-krown-bordeaux mb-4">{title}</h3>
-      <p className="text-krown-sage text-sm font-medium leading-relaxed">{desc}</p>
-    </div>
+      <h3 className="text-2xl font-black text-krown-bordeaux dark:text-white mb-4 transition-colors tracking-tight">{title}</h3>
+      <p className="text-krown-sage dark:text-gray-400 font-medium leading-relaxed transition-colors text-sm">{desc}</p>
+    </motion.div>
   );
 }
 
 function MentorshipModal({ program, onClose }) {
-  const { showNotification } = useNotification();
   const [motivation, setMotivation] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const { showNotification } = useNotification();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await api.post('mentorship/apply/', {
-        program: program.id,
-        motivation: motivation
-      });
+      await api.post('mentorship/apply/', { program: program.id, motivation: motivation });
       setSuccess(true);
       showNotification("Candidature envoyée avec succès !");
       setTimeout(() => onClose(), 2000);
     } catch (error) {
-      const errorMsg = error.response?.data?.detail || "Une erreur est survenue. Assurez-vous d'être connecté.";
-      showNotification(errorMsg, "error");
+      showNotification("Une erreur est survenue.", "error");
     } finally {
       setLoading(false);
     }
@@ -165,52 +170,27 @@ function MentorshipModal({ program, onClose }) {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-krown-bordeaux/40 backdrop-blur-md">
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        className="bg-white w-full max-w-xl rounded-[40px] shadow-2xl overflow-hidden"
-      >
+      <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="bg-white dark:bg-[#120808] w-full max-w-xl rounded-[50px] shadow-3xl overflow-hidden transition-colors border dark:border-white/5">
         <div className="p-12">
           <div className="flex justify-between items-start mb-10">
             <div>
-              <h3 className="text-3xl font-black text-krown-bordeaux tracking-tight">Candidature</h3>
-              <p className="text-krown-gold font-bold text-sm uppercase tracking-widest mt-1">{program.title}</p>
+              <h3 className="text-3xl font-black text-krown-bordeaux dark:text-white tracking-tight leading-none">Admission</h3>
+              <p className="text-krown-gold font-bold text-xs uppercase tracking-widest mt-2">{program.title}</p>
             </div>
-            <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-              <X className="h-6 w-6 text-gray-400" />
-            </button>
+            <button onClick={onClose} className="p-3 bg-gray-50 dark:bg-white/5 rounded-full transition-colors"><X className="h-6 w-6 text-gray-400" /></button>
           </div>
-
           {success ? (
             <div className="text-center py-10">
-               <div className="w-20 h-20 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <CheckCircle className="h-10 w-10" />
-               </div>
-               <h4 className="text-2xl font-bold text-krown-bordeaux mb-2">Candidature Reçue</h4>
-               <p className="text-krown-sage font-medium">Nous analyserons votre profil avec la plus grande attention.</p>
+               <div className="w-24 h-24 bg-green-50 dark:bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8"><CheckCircle className="h-12 w-12" /></div>
+               <h4 className="text-3xl font-black text-krown-bordeaux dark:text-white mb-4">Application Received</h4>
+               <p className="text-krown-sage dark:text-gray-400 font-medium">Nous reviendrons vers vous sous peu.</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-8">
-              <div>
-                <label className="block text-[10px] font-black uppercase tracking-widest text-krown-gold mb-4 ml-2">Pourquoi souhaitez-vous rejoindre ce programme ?</label>
-                <textarea
-                  required
-                  rows="6"
-                  className="w-full p-8 bg-gray-50 border border-gray-100 rounded-[30px] focus:ring-2 focus:ring-krown-gold outline-none transition-all font-medium resize-none text-krown-bordeaux"
-                  placeholder="Décrivez vos ambitions et ce que vous attendez du mentorat KROWN..."
-                  value={motivation}
-                  onChange={(e) => setMotivation(e.target.value)}
-                ></textarea>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-6 bg-krown-bordeaux text-white rounded-2xl font-black text-lg shadow-xl hover:bg-krown-gold transition-all flex items-center justify-center gap-3 disabled:opacity-50"
-              >
+              <textarea required rows="6" className="w-full p-8 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-[40px] focus:ring-2 focus:ring-krown-gold outline-none transition-all font-medium resize-none text-krown-bordeaux dark:text-white" placeholder="Pourquoi KROWN ? Pourquoi maintenant ?" value={motivation} onChange={(e) => setMotivation(e.target.value)}></textarea>
+              <button type="submit" disabled={loading} className="w-full py-6 bg-krown-bordeaux dark:bg-krown-gold text-white rounded-3xl font-black text-xs uppercase tracking-[0.3em] shadow-2xl hover:scale-[1.02] transition-all flex items-center justify-center gap-3 disabled:opacity-50">
                 {loading ? <Loader2 className="h-6 w-6 animate-spin" /> : <Send className="h-5 w-5" />}
-                Envoyer mon dossier
+                Submit Application
               </button>
             </form>
           )}

@@ -1,6 +1,15 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, viewsets
 from .models import MentorshipProgram, MentorshipApplication
 from .serializers import MentorshipProgramSerializer, MentorshipApplicationSerializer
+
+class MentorshipProgramViewSet(viewsets.ModelViewSet):
+    queryset = MentorshipProgram.objects.all().order_by('-created_at')
+    serializer_class = MentorshipProgramSerializer
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [permissions.AllowAny()]
+        return [permissions.IsAdminUser()]
 
 class MentorshipProgramListView(generics.ListAPIView):
     queryset = MentorshipProgram.objects.all()
