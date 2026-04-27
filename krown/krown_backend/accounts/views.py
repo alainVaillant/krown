@@ -15,3 +15,13 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
+class AdminUserListView(generics.ListCreateAPIView):
+    queryset = User.objects.all().order_by('-created_at')
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAdminUser]
+
+class AdminUserDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAdminUser]

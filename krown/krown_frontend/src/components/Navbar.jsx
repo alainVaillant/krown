@@ -20,10 +20,12 @@ export default function Navbar() {
           
           <div className="hidden md:flex items-center space-x-8">
             <Link to="/" className="text-gray-600 hover:text-krown-bordeaux font-bold transition-colors">Accueil</Link>
+            <Link to="/about" className="text-gray-600 hover:text-krown-bordeaux font-bold transition-colors">À Propos</Link>
             <Link to="/services" className="text-gray-600 hover:text-krown-bordeaux font-bold transition-colors">Services</Link>
             <Link to="/academy" className="text-gray-600 hover:text-krown-bordeaux font-bold transition-colors">Académie</Link>
             <Link to="/real-estate" className="text-gray-600 hover:text-krown-bordeaux font-bold transition-colors">Immobilier</Link>
             <Link to="/blog" className="text-gray-600 hover:text-krown-bordeaux font-bold transition-colors">Blog</Link>
+            <Link to="/contact" className="text-gray-600 hover:text-krown-bordeaux font-bold transition-colors">Contact</Link>
             
             {user ? (
               <div className="flex items-center gap-4 pl-4 border-l border-gray-100">
@@ -51,10 +53,12 @@ export default function Navbar() {
       {isOpen && (
         <div className="md:hidden bg-white border-t border-gray-100 p-6 space-y-4 shadow-xl">
           <Link to="/" className="block text-gray-600 font-bold" onClick={() => setIsOpen(false)}>Accueil</Link>
+          <Link to="/about" className="block text-gray-600 font-bold" onClick={() => setIsOpen(false)}>À Propos</Link>
           <Link to="/services" className="block text-gray-600 font-bold" onClick={() => setIsOpen(false)}>Services</Link>
           <Link to="/academy" className="block text-gray-600 font-bold" onClick={() => setIsOpen(false)}>Académie</Link>
           <Link to="/real-estate" className="block text-gray-600 font-bold" onClick={() => setIsOpen(false)}>Immobilier</Link>
           <Link to="/blog" className="block text-gray-600 font-bold" onClick={() => setIsOpen(false)}>Blog</Link>
+          <Link to="/contact" className="block text-gray-600 font-bold" onClick={() => setIsOpen(false)}>Contact</Link>
           {user ? (
             <Link to="/dashboard" className="block text-krown-bordeaux font-black uppercase" onClick={() => setIsOpen(false)}>Dashboard</Link>
           ) : (

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
@@ -13,10 +13,12 @@ export default function Login() {
   const { user, login } = useAuth();
   const navigate = useNavigate();
 
-  // Rediriger si déjà connecté
-  if (user) {
-    navigate('/dashboard');
-  }
+  // Rediriger si déjà connecté, proprement avec useEffect
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +26,7 @@ export default function Login() {
     setLoading(true);
     try {
       await login(username, password);
-      navigate('/dashboard');
+      // La redirection sera gérée par le useEffect ci-dessus une fois que 'user' sera mis à jour
     } catch (err) {
       setError('Identifiants incorrects. Veuillez réessayer.');
     } finally {

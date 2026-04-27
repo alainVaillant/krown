@@ -11,6 +11,7 @@ urlpatterns = [
     path('api/real-estate/', include('real_estate.urls')),
     path('api/blog/', include('blog.urls')),
     path('api/mentorship/', include('mentorship.urls')),
+    path('api/dashboard/', include('dashboard.urls')),
 ]
 
 # Gestion de l'admin.site.urls de manière standard

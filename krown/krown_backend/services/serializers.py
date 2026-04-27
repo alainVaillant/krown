@@ -7,7 +7,8 @@ class ServiceSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ServiceRequestSerializer(serializers.ModelSerializer):
+    service_details = ServiceSerializer(source='service', read_only=True)
     class Meta:
         model = ServiceRequest
-        fields = '__all__'
+        fields = ('id', 'user', 'service', 'service_details', 'message', 'status', 'created_at')
         read_only_fields = ('user', 'status', 'created_at')

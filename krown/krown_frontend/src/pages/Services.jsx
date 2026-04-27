@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../services/api';
-import { Rocket, Users, Shield, GraduationCap, ArrowRight, Loader2, Sparkles } from 'lucide-react';
+import { Sparkles, Loader2, ArrowRight, Rocket, Users, Shield, GraduationCap } from 'lucide-react';
+import ServiceRequestModal from '../components/ServiceRequestModal';
 
 const categories = [
   { id: 'all', name: 'Tous nos pôles', icon: <Sparkles className="h-4 w-4" /> },
@@ -16,6 +17,7 @@ export default function Services() {
   const [filteredServices, setFilteredServices] = useState([]);
   const [activeTab, setActiveTab] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [selectedService, setSelectedService] = useState(null);
 
   const fetchServices = useCallback(async () => {
     try {
@@ -62,7 +64,6 @@ export default function Services() {
           </motion.h1>
         </div>
 
-        {/* Filtres Premium */}
         <div className="flex flex-wrap gap-3 mb-16 p-2 bg-white/50 backdrop-blur-md rounded-[32px] border border-white w-fit shadow-sm">
           {categories.map((cat) => (
             <button
@@ -124,7 +125,10 @@ export default function Services() {
                     <p className="text-krown-sage text-sm leading-relaxed mb-8 line-clamp-3 font-medium">
                       {service.description}
                     </p>
-                    <button className="w-full py-5 bg-krown-cream text-krown-bordeaux font-black rounded-2xl border border-krown-bordeaux/5 hover:bg-krown-bordeaux hover:text-white transition-all duration-300 tracking-widest text-xs uppercase">
+                    <button 
+                      onClick={() => setSelectedService(service)}
+                      className="w-full py-5 bg-krown-cream text-krown-bordeaux font-black rounded-2xl border border-krown-bordeaux/5 hover:bg-krown-bordeaux hover:text-white transition-all duration-300 tracking-widest text-xs uppercase"
+                    >
                       Demander une consultation
                     </button>
                   </div>
@@ -133,6 +137,15 @@ export default function Services() {
             </AnimatePresence>
           </motion.div>
         )}
+
+        <AnimatePresence>
+          {selectedService && (
+            <ServiceRequestModal 
+              service={selectedService} 
+              onClose={() => setSelectedService(null)} 
+            />
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

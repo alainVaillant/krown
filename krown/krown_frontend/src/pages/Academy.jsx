@@ -87,6 +87,9 @@ export default function Academy() {
                       <PlayCircle className="h-16 w-16 text-krown-gold opacity-50" />
                     </div>
                   )}
+                  <div className="absolute top-4 left-4 bg-krown-gold/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-black text-white uppercase tracking-widest">
+                    {course.category === 'bass' ? 'Guitare Basse' : 'Accompagnement'}
+                  </div>
                   <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-krown-bordeaux font-bold shadow-lg">
                     {course.price} €
                   </div>

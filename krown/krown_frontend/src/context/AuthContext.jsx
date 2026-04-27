@@ -8,10 +8,17 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const fetchProfile = useCallback(async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await api.get('accounts/profile/');
       setUser(response.data);
     } catch (error) {
+      console.error("Session expirée", error);
       localStorage.removeItem('token');
       setUser(null);
     } finally {
@@ -20,12 +27,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      fetchProfile();
-    } else {
-      setLoading(false);
-    }
+    fetchProfile();
   }, [fetchProfile]);
 
   const login = async (username, password) => {

@@ -4,7 +4,9 @@ import {
   BookOpen, 
   LogOut, 
   User, 
-  Briefcase
+  Briefcase,
+  ShieldCheck,
+  Layout
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -13,6 +15,9 @@ export default function Sidebar() {
   const location = useLocation();
 
   const menuItems = [
+    { name: 'Pilotage Admin', path: '/admin-dashboard', icon: <ShieldCheck className="h-5 w-5" />, roles: ['admin'] },
+    { name: 'Gestion Membres', path: '/admin/users', icon: <User className="h-5 w-5" />, roles: ['admin'] },
+    { name: 'Gestion Contenus', path: '/admin/content', icon: <Layout className="h-5 w-5" />, roles: ['admin'] },
     { name: 'Vue d\'ensemble', path: '/dashboard', icon: <LayoutDashboard className="h-5 w-5" />, roles: ['admin', 'client', 'student', 'partner'] },
     { name: 'Mes Formations', path: '/dashboard/courses', icon: <BookOpen className="h-5 w-5" />, roles: ['student', 'admin'] },
     { name: 'Mes Demandes', path: '/dashboard/requests', icon: <Briefcase className="h-5 w-5" />, roles: ['client', 'admin'] },
