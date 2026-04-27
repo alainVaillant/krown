@@ -9,7 +9,6 @@ import Register from './pages/Register';
 import Services from './pages/Services';
 import Academy from './pages/Academy';
 import RealEstate from './pages/RealEstate';
-import Blog from './pages/Blog';
 import Mentorship from './pages/Mentorship';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
@@ -23,7 +22,7 @@ import UserRequests from './pages/UserRequests';
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white dark:bg-[#0A0505] transition-colors duration-500">
         <Navbar />
         <main>
           <Routes>
@@ -36,7 +35,6 @@ function App() {
             <Route path="/services" element={<Services />} />
             <Route path="/academy" element={<Academy />} />
             <Route path="/real-estate" element={<RealEstate />} />
-            <Route path="/blog" element={<Blog />} />
             <Route path="/mentorship" element={<Mentorship />} />
             
             {/* Routes protégées */}
@@ -63,10 +61,10 @@ function App() {
           </Routes>
         </main>
         
-        <footer className="bg-white border-t border-gray-100 py-12">
+        <footer className="bg-white dark:bg-[#120808] border-t border-gray-100 dark:border-white/5 py-12 transition-colors">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p className="text-krown-bordeaux font-black text-2xl mb-2 tracking-tighter uppercase">KROWN</p>
-            <p className="text-gray-400 text-sm font-medium tracking-wide">© 2026 KROWN. Excellence & Strategic Mentorship.</p>
+            <p className="text-krown-bordeaux dark:text-krown-gold font-black text-2xl mb-2 tracking-tighter uppercase">KROWN</p>
+            <p className="text-gray-400 dark:text-gray-500 text-sm font-medium tracking-wide">© 2026 KROWN. Excellence & Strategic Mentorship.</p>
           </div>
         </footer>
       </div>

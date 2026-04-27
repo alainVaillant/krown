@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, Loader2, CheckCircle } from 'lucide-react';
 import api from '../services/api';
+import { useNotification } from '../context/NotificationContext';
 
 export default function ServiceRequestModal({ service, onClose }) {
+  const { showNotification } = useNotification();
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -17,9 +19,11 @@ export default function ServiceRequestModal({ service, onClose }) {
         message: message
       });
       setSuccess(true);
+      showNotification("Demande envoyée !");
       setTimeout(() => onClose(), 2000);
     } catch (error) {
-      alert("Erreur lors de l'envoi de la demande. Assurez-vous d'être connecté.");
+      const errorMsg = error.response?.data?.detail || "Erreur lors de l'envoi de la demande. Assurez-vous d'être connecté.";
+      showNotification(errorMsg, "error");
     } finally {
       setLoading(false);
     }

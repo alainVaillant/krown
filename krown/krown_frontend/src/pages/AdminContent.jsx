@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import api from '../services/api';
 import Sidebar from '../components/Sidebar';
+import { useNotification } from '../context/NotificationContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Plus, 
@@ -13,10 +14,13 @@ import {
   Save,
   Image as ImageIcon,
   PlayCircle,
-  GripVertical
+  GripVertical,
+  Home,
+  MapPin
 } from 'lucide-react';
 
 export default function AdminContent() {
+  const { showNotification } = useNotification();
   const [activeTab, setActiveTab] = useState('services');
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,7 +34,9 @@ export default function AdminContent() {
     title: '',
     description: '',
     category: '',
-    price: ''
+    price: '',
+    location: '',
+    is_available: true
   });
 
   const [lessonFormData, setLessonFormData] = useState({
@@ -43,11 +49,15 @@ export default function AdminContent() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const endpoint = activeTab === 'services' ? 'services/manage/admin-manage/' : 'academy/manage/admin-manage/';
+      let endpoint = '';
+      if (activeTab === 'services') endpoint = 'services/manage/admin-manage/';
+      else if (activeTab === 'academy') endpoint = 'academy/manage/admin-manage/';
+      else if (activeTab === 'real_estate') endpoint = 'real-estate/manage/admin-manage/';
+      
       const response = await api.get(endpoint);
       setData(response.data);
     } catch (error) {
-      console.error("Erreur chargement", error);
+      console.error("Erreur chargement");
     } finally {
       setLoading(false);
     }
@@ -57,15 +67,20 @@ export default function AdminContent() {
     fetchData();
   }, [fetchData]);
 
-  // Gestion des Cours/Services
   const handleDelete = async (id) => {
     if (!window.confirm("Supprimer cet élément ?")) return;
     try {
-      const endpoint = activeTab === 'services' ? `services/manage/admin-manage/${id}/` : `academy/manage/admin-manage/${id}/`;
+      let endpoint = '';
+      if (activeTab === 'services') endpoint = `services/manage/admin-manage/${id}/`;
+      else if (activeTab === 'academy') endpoint = `academy/manage/admin-manage/${id}/`;
+      else if (activeTab === 'real_estate') endpoint = `real-estate/manage/admin-manage/${id}/`;
+      
       await api.delete(endpoint);
       fetchData();
+      showNotification("Supprimé avec succès");
     } catch (error) {
-      alert("Erreur suppression");
+      const errorMsg = error.response?.data?.detail || "Erreur suppression";
+      showNotification(errorMsg, "error");
     }
   };
 
@@ -75,17 +90,14 @@ export default function AdminContent() {
       setFormData({
         title: item.title,
         description: item.description,
-        category: item.category || (activeTab === 'services' ? 'tech' : 'bass'),
-        price: item.price || ''
+        category: item.category || '',
+        price: item.price || '',
+        location: item.location || '',
+        is_available: item.is_available ?? true
       });
     } else {
       setEditingItem(null);
-      setFormData({ 
-        title: '', 
-        description: '', 
-        category: activeTab === 'services' ? 'tech' : 'bass', 
-        price: '' 
-      });
+      setFormData({ title: '', description: '', category: '', price: '', location: '', is_available: true });
     }
     setIsModalOpen(true);
   };
@@ -93,9 +105,14 @@ export default function AdminContent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const endpoint = activeTab === 'services' ? 'services/manage/admin-manage/' : 'academy/manage/admin-manage/';
+      let endpoint = '';
+      if (activeTab === 'services') endpoint = 'services/manage/admin-manage/';
+      else if (activeTab === 'academy') endpoint = 'academy/manage/admin-manage/';
+      else if (activeTab === 'real_estate') endpoint = 'real-estate/manage/admin-manage/';
+
       const dataToSend = { ...formData };
       if (!dataToSend.price) delete dataToSend.price;
+
       if (editingItem) {
         await api.patch(`${endpoint}${editingItem.id}/`, dataToSend);
       } else {
@@ -103,9 +120,10 @@ export default function AdminContent() {
       }
       setIsModalOpen(false);
       fetchData();
-      alert("Enregistrement réussi !");
+      showNotification("Enregistrement réussi !");
     } catch (error) {
-      alert("Erreur lors de l'enregistrement");
+      const errorMsg = error.response?.data?.detail || "Erreur lors de l'enregistrement";
+      showNotification(errorMsg, "error");
     }
   };
 
@@ -134,8 +152,10 @@ export default function AdminContent() {
       });
       setLessonFormData({ title: '', video_url: '', content: '', order: lessons.length + 1 });
       fetchLessons(selectedCourse.id);
+      showNotification("Leçon ajoutée");
     } catch (error) {
-      alert("Erreur ajout leçon");
+      const errorMsg = error.response?.data?.detail || "Erreur ajout leçon";
+      showNotification(errorMsg, "error");
     }
   };
 
@@ -144,8 +164,10 @@ export default function AdminContent() {
     try {
       await api.delete(`academy/manage/admin-lessons/${id}/`);
       fetchLessons(selectedCourse.id);
+      showNotification("Leçon supprimée");
     } catch (error) {
-      alert("Erreur suppression");
+      const errorMsg = error.response?.data?.detail || "Erreur suppression";
+      showNotification(errorMsg, "error");
     }
   };
 
@@ -157,14 +179,14 @@ export default function AdminContent() {
         <header className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
           <div>
             <h1 className="text-4xl font-black text-krown-bordeaux tracking-tight">Gestion des Contenus</h1>
-            <p className="text-krown-sage mt-2 font-medium italic">Créez et modifiez l'offre KROWN.</p>
+            <p className="text-krown-sage mt-2 font-medium italic">Pilotez l'ensemble de l'offre KROWN.</p>
           </div>
           
           <button 
             onClick={() => handleOpenModal()}
             className="flex items-center gap-3 bg-krown-bordeaux text-white px-8 py-4 rounded-2xl font-bold shadow-xl hover:bg-krown-gold transition-all"
           >
-            <Plus className="h-5 w-5" /> Ajouter un {activeTab === 'services' ? 'Service' : 'Cours'}
+            <Plus className="h-5 w-5" /> Ajouter {activeTab === 'services' ? 'un Service' : activeTab === 'academy' ? 'un Cours' : 'un Bien'}
           </button>
         </header>
 
@@ -172,6 +194,7 @@ export default function AdminContent() {
         <div className="flex gap-4 mb-12 bg-white p-2 rounded-2xl w-fit shadow-sm border border-gray-100">
            <button onClick={() => setActiveTab('services')} className={`px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${activeTab === 'services' ? 'bg-krown-bordeaux text-white shadow-lg' : 'text-gray-400 hover:bg-gray-50'}`}><Layout className="h-4 w-4" /> Services</button>
            <button onClick={() => setActiveTab('academy')} className={`px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${activeTab === 'academy' ? 'bg-krown-bordeaux text-white shadow-lg' : 'text-gray-400 hover:bg-gray-50'}`}><BookOpen className="h-4 w-4" /> Académie</button>
+           <button onClick={() => setActiveTab('real_estate')} className={`px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${activeTab === 'real_estate' ? 'bg-krown-bordeaux text-white shadow-lg' : 'text-gray-400 hover:bg-gray-50'}`}><Home className="h-4 w-4" /> Immobilier</button>
         </div>
 
         {loading ? (
@@ -181,7 +204,9 @@ export default function AdminContent() {
             {data.map((item) => (
               <motion.div layout key={item.id} className="bg-white p-8 rounded-[40px] shadow-sm border border-gray-100 group">
                  <div className="flex justify-between items-start mb-6">
-                    <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center text-krown-gold group-hover:bg-krown-gold group-hover:text-white transition-all"><ImageIcon className="h-6 w-6" /></div>
+                    <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center text-krown-gold group-hover:bg-krown-gold group-hover:text-white transition-all">
+                       {activeTab === 'real_estate' ? <Home className="h-6 w-6" /> : <ImageIcon className="h-6 w-6" />}
+                    </div>
                     <div className="flex gap-2">
                        {activeTab === 'academy' && (
                          <button onClick={() => handleOpenLessonManager(item)} className="p-3 bg-krown-gold/10 text-krown-gold rounded-xl hover:bg-krown-gold hover:text-white transition-all">
@@ -193,9 +218,14 @@ export default function AdminContent() {
                     </div>
                  </div>
                  <h3 className="text-xl font-bold text-krown-bordeaux mb-2">{item.title}</h3>
-                 <p className="text-krown-sage text-sm line-clamp-2 mb-6">{item.description}</p>
+                 <p className="text-krown-sage text-sm line-clamp-2 mb-4">{item.description}</p>
+                 {activeTab === 'real_estate' && (
+                   <div className="flex items-center gap-2 text-gray-400 text-xs mb-4">
+                      <MapPin className="h-3 w-3" /> {item.location}
+                   </div>
+                 )}
                  <div className="flex justify-between items-center pt-6 border-t border-gray-50">
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-krown-gold">{item.category}</span>
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-krown-gold">{item.category || (activeTab === 'real_estate' ? 'Immobilier' : '')}</span>
                     <span className="font-bold text-krown-bordeaux">{item.price ? `${item.price} €` : 'Sur devis'}</span>
                  </div>
               </motion.div>
@@ -203,17 +233,26 @@ export default function AdminContent() {
           </div>
         )}
 
-        {/* Modale d'Édition Cours/Service */}
+        {/* Modale d'Édition */}
         <AnimatePresence>
           {isModalOpen && (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-krown-bordeaux/40 backdrop-blur-md">
               <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="bg-white w-full max-w-2xl rounded-[50px] shadow-2xl overflow-hidden p-12">
                 <div className="flex justify-between items-center mb-10">
-                   <h2 className="text-3xl font-black text-krown-bordeaux">{editingItem ? 'Modifier' : 'Nouveau'} {activeTab === 'services' ? 'Service' : 'Cours'}</h2>
+                   <h2 className="text-3xl font-black text-krown-bordeaux">{editingItem ? 'Modifier' : 'Nouveau'} {activeTab === 'services' ? 'Service' : activeTab === 'academy' ? 'Cours' : 'Bien'}</h2>
                    <button onClick={() => setIsModalOpen(false)}><X className="h-6 w-6 text-gray-400" /></button>
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-6">
                    <input type="text" required placeholder="Titre" className="w-full p-5 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-krown-gold" value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} />
+                   
+                   {activeTab === 'real_estate' && (
+                      <input type="text" required placeholder="Localisation" className="w-full p-5 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-krown-gold" value={formData.location} onChange={(e) => setFormData({...formData, location: e.target.value})} />
+                   )}
+
+                   {(activeTab === 'academy' || activeTab === 'real_estate') && (
+                      <input type="number" placeholder="Prix (€)" className="w-full p-5 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-krown-gold" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} />
+                   )}
+
                    <textarea required rows="4" placeholder="Description" className="w-full p-5 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-krown-gold resize-none" value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})}></textarea>
                    <button type="submit" className="w-full py-6 bg-krown-bordeaux text-white rounded-2xl font-black text-lg flex items-center justify-center gap-3 hover:bg-krown-gold transition-all shadow-xl"><Save className="h-6 w-6" /> Enregistrer</button>
                 </form>
@@ -222,7 +261,7 @@ export default function AdminContent() {
           )}
         </AnimatePresence>
 
-        {/* Modale de Gestion des Leçons */}
+        {/* Modale de Gestion des Leçons (Uniquement pour Academy) */}
         <AnimatePresence>
           {isLessonModalOpen && (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-krown-bordeaux/60 backdrop-blur-md">
@@ -236,7 +275,6 @@ export default function AdminContent() {
                 </div>
 
                 <div className="flex-grow overflow-y-auto p-10 flex flex-col lg:flex-row gap-10">
-                   {/* Formulaire Nouvelle Leçon */}
                    <div className="lg:w-1/3">
                       <form onSubmit={handleAddLesson} className="bg-white p-8 rounded-[32px] shadow-sm space-y-4 sticky top-0">
                          <h3 className="font-black text-krown-bordeaux uppercase text-xs tracking-widest mb-6">Ajouter une Leçon</h3>
@@ -246,8 +284,6 @@ export default function AdminContent() {
                          <button type="submit" className="w-full py-4 bg-krown-gold text-white rounded-xl font-bold text-sm hover:bg-krown-bordeaux transition-all">Ajouter au programme</button>
                       </form>
                    </div>
-
-                   {/* Liste des Leçons */}
                    <div className="lg:w-2/3 space-y-4">
                       {lessons.length === 0 ? (
                         <div className="text-center py-20 bg-white/50 rounded-[32px] border-2 border-dashed border-gray-200 text-gray-400 font-medium italic">Aucune leçon pour le moment.</div>

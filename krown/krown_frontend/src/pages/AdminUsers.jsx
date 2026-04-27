@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import api from '../services/api';
 import Sidebar from '../components/Sidebar';
+import { useNotification } from '../context/NotificationContext';
 import { motion } from 'framer-motion';
 import { 
   Search, 
@@ -10,6 +11,7 @@ import {
 } from 'lucide-react';
 
 export default function AdminUsers() {
+  const { showNotification } = useNotification();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -33,9 +35,10 @@ export default function AdminUsers() {
     try {
       await api.patch(`accounts/admin/users/${userId}/`, { role: newRole });
       fetchUsers();
-      alert("Rôle mis à jour !");
+      showNotification("Rôle mis à jour !");
     } catch (error) {
-      alert("Erreur lors de la mise à jour", error);
+      const errorMsg = error.response?.data?.detail || "Erreur lors de la mise à jour";
+      showNotification(errorMsg, "error");
     }
   };
 

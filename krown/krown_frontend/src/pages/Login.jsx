@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useNotification } from '../context/NotificationContext';
 import { motion } from 'framer-motion';
 import { Lock, User, AlertCircle } from 'lucide-react';
 
 export default function Login() {
+  const { showNotification } = useNotification();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -26,9 +28,12 @@ export default function Login() {
     setLoading(true);
     try {
       await login(username, password);
+      showNotification("Connexion réussie !");
       // La redirection sera gérée par le useEffect ci-dessus une fois que 'user' sera mis à jour
     } catch (err) {
-      setError('Identifiants incorrects. Veuillez réessayer.');
+      const errorMsg = 'Identifiants incorrects. Veuillez réessayer.';
+      setError(errorMsg);
+      showNotification(errorMsg, "error");
     } finally {
       setLoading(false);
     }

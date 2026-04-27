@@ -27,11 +27,11 @@ export default function Sidebar() {
   const filteredMenu = menuItems.filter(item => item.roles.includes(user?.role));
 
   return (
-    <div className="w-64 bg-white border-r border-gray-100 flex flex-col h-screen sticky top-0">
+    <div className="w-64 bg-white dark:bg-black border-r border-gray-100 dark:border-white/10 flex flex-col h-screen sticky top-0 transition-colors">
       <div className="p-8">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-krown-bordeaux rounded-lg flex items-center justify-center text-white font-black">K</div>
-          <span className="font-black text-xl text-krown-bordeaux tracking-tighter uppercase">Dashboard</span>
+          <div className="w-8 h-8 bg-krown-bordeaux dark:bg-krown-gold rounded-lg flex items-center justify-center text-white font-black">K</div>
+          <span className="font-black text-xl text-krown-bordeaux dark:text-white tracking-tighter uppercase">Dashboard</span>
         </Link>
       </div>
 
@@ -42,8 +42,8 @@ export default function Sidebar() {
             to={item.path}
             className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
               location.pathname === item.path 
-              ? 'bg-krown-bordeaux text-white shadow-lg shadow-red-900/10' 
-              : 'text-gray-500 hover:bg-gray-50 hover:text-krown-bordeaux'
+              ? 'bg-krown-bordeaux dark:bg-krown-gold text-white shadow-lg' 
+              : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-krown-bordeaux dark:hover:text-krown-gold'
             }`}
           >
             {item.icon}
@@ -52,10 +52,10 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      <div className="p-4 border-t border-gray-100">
+      <div className="p-4 border-t border-gray-100 dark:border-white/10">
         <button 
           onClick={logout}
-          className="flex items-center gap-3 px-4 py-3 w-full rounded-xl font-medium text-red-500 hover:bg-red-50 transition-all"
+          className="flex items-center gap-3 px-4 py-3 w-full rounded-xl font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all"
         >
           <LogOut className="h-5 w-5" />
           Déconnexion

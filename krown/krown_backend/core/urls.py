@@ -9,7 +9,6 @@ urlpatterns = [
     path('api/services/', include('services.urls')),
     path('api/academy/', include('academy.urls')),
     path('api/real-estate/', include('real_estate.urls')),
-    path('api/blog/', include('blog.urls')),
     path('api/mentorship/', include('mentorship.urls')),
     path('api/dashboard/', include('dashboard.urls')),
 ]

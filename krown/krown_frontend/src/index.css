@@ -2,6 +2,9 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;600;700;900&display=swap');
 
+/* Configuration Mode Sombre pour Tailwind v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-krown-bordeaux: #4A0E0E;
   --color-krown-bordeaux-light: #631414;
@@ -18,31 +21,38 @@
 :root {
   background-color: #FDFCFB;
   color: #1a1a1a;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+html.dark {
+  background-color: #0A0505;
+  color: #FDFCFB;
 }
 
 body {
   margin: 0;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  background-color: transparent; /* Laisse le fond de html ou App prendre le dessus */
 }
 
 h1, h2, h3, .font-display {
   font-family: var(--font-display);
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar qui s'adapte */
 ::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: #4A0E0E;
   border-radius: 10px;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #631414;
+.dark ::-webkit-scrollbar-thumb {
+  background: #C5A059;
 }
 
 .premium-shadow {
@@ -50,13 +60,12 @@ h1, h2, h3, .font-display {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.premium-shadow:hover {
-  box-shadow: 0 20px 40px -15px rgba(74, 14, 14, 0.1);
+.dark .premium-shadow:hover {
+  box-shadow: 0 20px 40px -15px rgba(197, 160, 89, 0.2);
 }
 
 .glass-morphism {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }

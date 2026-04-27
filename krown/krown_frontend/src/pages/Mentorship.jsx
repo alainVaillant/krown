@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import api from '../services/api';
 import { Users, Target, Rocket, Award, CheckCircle, Loader2, ArrowRight, X, Send } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useNotification } from '../context/NotificationContext';
 
 export default function Mentorship() {
   const [programs, setPrograms] = useState([]);
@@ -138,6 +139,7 @@ function ValueCard({ icon, title, desc }) {
 }
 
 function MentorshipModal({ program, onClose }) {
+  const { showNotification } = useNotification();
   const [motivation, setMotivation] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -151,9 +153,11 @@ function MentorshipModal({ program, onClose }) {
         motivation: motivation
       });
       setSuccess(true);
+      showNotification("Candidature envoyée avec succès !");
       setTimeout(() => onClose(), 2000);
     } catch (error) {
-      alert("Une erreur est survenue. Assurez-vous d'être connecté.");
+      const errorMsg = error.response?.data?.detail || "Une erreur est survenue. Assurez-vous d'être connecté.";
+      showNotification(errorMsg, "error");
     } finally {
       setLoading(false);
     }

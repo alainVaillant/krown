@@ -44,7 +44,7 @@ export default function Services() {
   }, [activeTab, services]);
 
   return (
-    <div className="pt-40 pb-32 min-h-screen bg-krown-cream">
+    <div className="pt-40 pb-32 min-h-screen bg-krown-cream dark:bg-[#0A0505] transition-colors duration-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-20">
           <motion.div
@@ -58,21 +58,22 @@ export default function Services() {
           <motion.h1 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl font-black text-krown-bordeaux tracking-tighter leading-none"
+            className="text-5xl md:text-7xl font-black text-krown-bordeaux dark:text-white tracking-tighter leading-none transition-colors"
           >
             Nos Solutions <br /> <span className="text-krown-gold">Stratégiques.</span>
           </motion.h1>
         </div>
 
-        <div className="flex flex-wrap gap-3 mb-16 p-2 bg-white/50 backdrop-blur-md rounded-[32px] border border-white w-fit shadow-sm">
+        {/* Filtres Premium */}
+        <div className="flex flex-wrap gap-3 mb-16 p-2 bg-white/50 dark:bg-white/5 backdrop-blur-md rounded-[32px] border border-white dark:border-white/10 w-fit shadow-sm transition-colors">
           {categories.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setActiveTab(cat.id)}
               className={`flex items-center gap-3 px-8 py-4 rounded-[24px] font-bold text-sm transition-all ${
                 activeTab === cat.id 
-                ? 'bg-krown-bordeaux text-white shadow-xl shadow-red-900/20 scale-105' 
-                : 'text-krown-sage hover:bg-white hover:text-krown-bordeaux'
+                ? 'bg-krown-bordeaux dark:bg-krown-gold text-white shadow-xl scale-105' 
+                : 'text-krown-sage dark:text-gray-400 hover:bg-white dark:hover:bg-white/10 hover:text-krown-bordeaux dark:hover:text-white'
               }`}
             >
               {cat.icon}
@@ -86,10 +87,7 @@ export default function Services() {
             <Loader2 className="h-12 w-12 text-krown-gold animate-spin" />
           </div>
         ) : (
-          <motion.div 
-            layout
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10"
-          >
+          <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             <AnimatePresence mode='popLayout'>
               {filteredServices.map((service) => (
                 <motion.div
@@ -99,18 +97,14 @@ export default function Services() {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   whileHover={{ y: -15 }}
-                  className="bg-white rounded-[40px] overflow-hidden border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col group"
+                  className="bg-white dark:bg-[#120808] rounded-[40px] overflow-hidden border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col group"
                 >
-                  <div className="h-64 bg-gray-100 relative overflow-hidden">
+                  <div className="h-64 bg-gray-100 dark:bg-white/5 relative overflow-hidden">
                     {service.image ? (
-                      <img 
-                        src={service.image} 
-                        alt={service.title} 
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
+                      <img src={service.image} alt={service.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-krown-bordeaux/5 text-krown-gold">
-                        <Rocket className="h-16 w-16 opacity-20" />
+                      <div className="w-full h-full flex items-center justify-center text-krown-gold opacity-20">
+                        <Rocket className="h-16 w-16" />
                       </div>
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-krown-bordeaux/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-8">
@@ -121,13 +115,13 @@ export default function Services() {
                     <div className="text-[10px] font-black uppercase tracking-[0.2em] text-krown-gold mb-4 opacity-60">
                       {service.category}
                     </div>
-                    <h3 className="text-2xl font-bold text-krown-bordeaux mb-4 group-hover:text-krown-gold transition-colors">{service.title}</h3>
-                    <p className="text-krown-sage text-sm leading-relaxed mb-8 line-clamp-3 font-medium">
+                    <h3 className="text-2xl font-bold text-krown-bordeaux dark:text-white mb-4 group-hover:text-krown-gold transition-colors">{service.title}</h3>
+                    <p className="text-krown-sage dark:text-gray-400 text-sm leading-relaxed mb-8 line-clamp-3 font-medium transition-colors">
                       {service.description}
                     </p>
                     <button 
                       onClick={() => setSelectedService(service)}
-                      className="w-full py-5 bg-krown-cream text-krown-bordeaux font-black rounded-2xl border border-krown-bordeaux/5 hover:bg-krown-bordeaux hover:text-white transition-all duration-300 tracking-widest text-xs uppercase"
+                      className="w-full py-5 bg-krown-cream dark:bg-white/5 text-krown-bordeaux dark:text-white font-black rounded-2xl border border-krown-bordeaux/5 dark:border-white/5 hover:bg-krown-bordeaux dark:hover:bg-krown-gold hover:text-white transition-all duration-300 tracking-widest text-xs uppercase"
                     >
                       Demander une consultation
                     </button>
@@ -140,10 +134,7 @@ export default function Services() {
 
         <AnimatePresence>
           {selectedService && (
-            <ServiceRequestModal 
-              service={selectedService} 
-              onClose={() => setSelectedService(null)} 
-            />
+            <ServiceRequestModal service={selectedService} onClose={() => setSelectedService(null)} />
           )}
         </AnimatePresence>
       </div>

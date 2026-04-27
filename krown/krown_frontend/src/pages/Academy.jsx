@@ -3,22 +3,24 @@ import { motion } from 'framer-motion';
 import api from '../services/api';
 import { GraduationCap, PlayCircle, Clock, Star, ArrowRight, Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useNotification } from '../context/NotificationContext';
 
 export default function Academy() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+  const { showNotification } = useNotification();
 
   const fetchCourses = useCallback(async () => {
     try {
       const response = await api.get('academy/');
       setCourses(response.data);
     } catch (error) {
-      console.error("Erreur lors du chargement des cours:", error);
+      showNotification("Erreur lors du chargement des cours", "error");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [showNotification]);
 
   useEffect(() => {
     fetchCourses();
@@ -26,14 +28,14 @@ export default function Academy() {
 
   const handleEnroll = async (courseId) => {
     if (!user) {
-      alert("Veuillez vous connecter pour vous inscrire à un cours.");
+      showNotification("Veuillez vous connecter pour vous inscrire.", "info");
       return;
     }
     try {
       await api.post('academy/enroll/', { course: courseId });
-      alert("Inscription réussie !");
+      showNotification("Inscription réussie ! Bienvenue à la Bass Academy.");
     } catch (error) {
-      alert("Vous êtes déjà inscrit à ce cours ou une erreur est survenue.");
+      showNotification("Vous êtes déjà inscrit à ce cours.", "info");
     }
   };
 

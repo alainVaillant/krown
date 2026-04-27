@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useNotification } from '../context/NotificationContext';
 import { motion } from 'framer-motion';
 import { User, Mail, Lock, Phone, ArrowRight, AlertCircle, Briefcase } from 'lucide-react';
 import api from '../services/api';
 
 export default function Register() {
+  const { showNotification } = useNotification();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -24,7 +26,7 @@ export default function Register() {
     try {
       const response = await api.post('accounts/register/', formData);
       console.log("Inscription réussie:", response.data);
-      alert("Compte créé avec succès ! Connectez-vous.");
+      showNotification("Compte créé avec succès ! Connectez-vous.");
       navigate('/login');
     } catch (err) {
       console.error("Erreur d'inscription détaillée:", err.response?.data || err.message);
@@ -32,6 +34,7 @@ export default function Register() {
         ? Object.values(err.response.data).flat().join(' ')
         : "Impossible de contacter le serveur. Vérifiez que le backend est lancé.";
       setError(errorMsg);
+      showNotification(errorMsg, "error");
     } finally {
       setLoading(false);
     }

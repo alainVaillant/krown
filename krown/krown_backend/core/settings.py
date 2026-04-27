@@ -31,7 +31,6 @@ INSTALLED_APPS = [
     "mentorship",
     "academy",
     "real_estate",
-    "blog",
     "dashboard",
 ]
 
